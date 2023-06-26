@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Registration Form</title>
+  <style>
+    /* Form Styles */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .form-container {
+      width: 400px;
+      background-color: #fff;
+      border-radius: 5px;
+      padding: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-group input[type="file"] {
+      margin-top: 5px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      display: none;
+    }
+
+    .checkbox-group .checkmark {
+      display: inline-block;
+      position: relative;
+      width: 20px;
+      height: 20px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    .checkbox-group .checkmark:before {
+      content: "";
+      position: absolute;
+      display: none;
+      left: 7px;
+      top: 3px;
+      width: 5px;
+      height: 10px;
+      border: solid #007bff;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .checkbox-group input[type="checkbox"]:checked + .checkmark:before {
+      display: block;
+    }
+
+    .submit-btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    /* Profile Card Styles */
+    .profile-card {
+      max-width: 400px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .profile-card .profile-photo {
+      border-radius: 50%;
+      display: block;
+      margin: 0 auto 10px;
+      width: 100px;
+      height: 100px;
+    }
+
+    .profile-card h3 {
+      margin: 0;
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+
+    .profile-card p {
+      margin: 0;
+    }
+
+    .profile-card .skills-list {
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .profile-card .skills-list ul {
+      padding: 0;
+      list-style-type: none;
+      margin-bottom: 0;
+    }
+
+    .profile-card .skills-list li {
+      display: inline-block;
+      background-color: #007bff;
+      color: #fff;
+      font-size: 14px;
+      padding: 5px 10px;
+      margin: 5px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="form-container">
+      <h1>Registration form</h1>
+      <form id="registration-form" onsubmit="submitForm(event)">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="nameInput" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="emailInput" required>
+        </div>
+        <div class="form-group">
+          <label for="company">Company Name</label>
+          <input type="text" id="companyInput" required>
+        </div>
+        <div class="form-group checkbox-group">
+          <label for="skills">Skills</label>
+          <label>
+            <input type="checkbox" value="HTML">
+            <span class="checkmark"></span>
+            HTML
+          </label>
+          <label>
+            <input type="checkbox" value="CSS">
+            <span class="checkmark"></span>
+            CSS
+          </label>
+          <label>
+            <input type="checkbox" value="JavaScript">
+            <span class="checkmark"></span>
+            JavaScript
+          </label>
+          <label>
+            <input type="checkbox" value="Python">
+            <span class="checkmark"></span>
+            Python
+          </label>
+          <label>
+            <input type="checkbox" value="Java">
+            <span class="checkmark"></span>
+            Java
+          </label>
+        </div>
+        <div class="form-group">
+          <label for="profile-photo">Profile Photo</label>
+          <input type="file" id="photoInput" accept="image/*" required>
+        </div>
+        <button type="submit" class="submit-btn">Register</button>
+      </form>
+    </div>
+
+    <div class="output-container">
+      <h1>Registered users</h1>
+      <div id="profileOutput"></div>
+    </div>
+  </div>
+
+  <script>
+    function submitForm(event) {
+      event.preventDefault();
+
+      var name = document.getElementById('nameInput').value;
+      var email = document.getElementById('emailInput').value;
+      var company = document.getElementById('companyInput').value;
+      var skillsInputs = document.querySelectorAll('input[type="checkbox"]:checked');
+      var selectedSkills = Array.from(skillsInputs).map(input => input.value);
+      var profilePhoto = document.getElementById('photoInput').files[0];
+
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        var profileCard = createProfileCard(e.target.result, name, email, company, selectedSkills);
+        document.getElementById('profileOutput').appendChild(profileCard);
+      };
+      reader.readAsDataURL(profilePhoto);
+
+      document.getElementById('registration-form').reset();
+    }
+
+    function createProfileCard(photoUrl, name, email, company, skills) {
+      var profileCard = document.createElement('div');
+      profileCard.className = 'profile-card';
+
+      var profilePhoto = document.createElement('img');
+      profilePhoto.className = 'profile-photo';
+      profilePhoto.src = photoUrl;
+      profileCard.appendChild(profilePhoto);
+
+      var profileName = document.createElement('h3');
+      profileName.textContent = name;
+      profileCard.appendChild(profileName);
+
+      var profileEmail = document.createElement('p');
+      profileEmail.textContent = email;
+      profileCard.appendChild(profileEmail);
+
+      var profileCompany = document.createElement('p');
+      profileCompany.textContent = 'Company: ' + company;
+      profileCard.appendChild(profileCompany);
+
+      var skillsList = document.createElement('div');
+      skillsList.className = 'skills-list';
+      var skillsListUl = document.createElement('ul');
+      for (var i = 0; i < skills.length; i++) {
+        var skillLi = document.createElement('li');
+        skillLi.textContent = skills[i];
+        skillsListUl.appendChild(skillLi);
+      }
+      skillsList.appendChild(skillsListUl);
+      profileCard.appendChild(skillsList);
+
+      return profileCard;
+    }
+  </script>
+</body>
+</html>
